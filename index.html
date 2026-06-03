@@ -316,6 +316,44 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM San
 /* ── SCROLLBAR ── */
 ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
 
+/* --- MODERN BLUE UI UPGRADE --- */
+.modern-card {
+  background: linear-gradient(135deg, #ffffff, #f3f8ff);
+  border-radius: 16px;
+  padding: 20px;
+  margin-top: 20px;
+  box-shadow: 0 10px 30px rgba(37, 99, 235, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+.modern-card::before {
+  content: "";
+  position: absolute;
+  top: -60px;
+  right: -60px;
+  width: 220px;
+  height: 220px;
+  background: radial-gradient(circle, rgba(37, 99, 235, 0.15), transparent);
+  border-radius: 50%;
+}
+
+.planner-input {
+  width: 100%;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  margin-top: 5px;
+  margin-bottom: 10px;
+}
+
+.week-row {
+  padding: 6px 10px;
+  background: var(--surface2);
+  border-radius: 8px;
+  margin-bottom: 6px;
+}
+
 /* ── PRINT ── */
 @media print{
   .sidebar,.topbar-right,.ibtn,.sib,.stib,.subacts,.stacts,.addinline,.btn,.docitem-acts,.cal-ctrl .btn,.cal-navbtn,.vtabs{display:none!important}
@@ -506,6 +544,27 @@ function renderDash(){
     </div>`;
   });
   h+='</div>';
+  
+h += `
+  <div class="modern-card">
+    <h3 style="margin-bottom:10px;">Term Planner</h3>
+
+    <label>Number of weeks:</label>
+    <input class="planner-input" type="number" id="weeksInput" value="10" min="1">
+
+    <label>Starting week:</label>
+    <select class="planner-input" id="startWeek">
+      <option value="A">Week A</option>
+      <option value="B">Week B</option>
+    </select>
+
+    <button class="btn blue" onclick="generateWeeks()">Generate Planner</button>
+
+    <div id="weekOutput" style="margin-top:15px;"></div>
+  </div>
+`;
+``
+
   document.getElementById('content').innerHTML=h;
 }
 
@@ -974,6 +1033,21 @@ function exportCSV(){
 document.getElementById('overlay').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal();});
 document.getElementById('dv-overlay').addEventListener('click',e=>{if(e.target===e.currentTarget)closeDV();});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();closeDV();}});
+
+function generateWeeks() {
+  const weeks = parseInt(document.getElementById("weeksInput").value);
+  let current = document.getElementById("startWeek").value;
+
+  let output = "";
+
+  for (let i = 1; i <= weeks; i++) {
+    output += `<div class="week-row">Week ${i} – Week ${current}</div>`;
+    current = current === "A" ? "B" : "A";
+  }
+
+  document.getElementById("weekOutput").innerHTML = output;
+}
+  
 renderTopbar();render();
 </script>
 </body>
