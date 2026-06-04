@@ -492,6 +492,7 @@ let projects=[
 let folders=[{id:'f1',name:'NESA Documents',parent:'root'},{id:'f2',name:'HR & Staff',parent:'root'},{id:'f3',name:'Budget',parent:'root'}];
 let docs=[];
 let calManual=[];
+let invitedUsers=[];
 
 // helpers
 function ct(){const m=new Date().getMonth()+1;if(m<=4)return'T1';if(m<=7)return'T2';if(m<=9)return'T3';return'T4';}
@@ -627,6 +628,19 @@ h += `
 `;
 ``
 
+  h += `
+  <div class="modern-card" style="margin-top:18px;">
+    <h3 style="margin-bottom:10px;">Invite admin staff</h3>
+    <p style="margin-bottom:12px;color:var(--text3);font-size:13px;line-height:1.6">Add your team members and choose whether they can view the planner or have full administration access.</p>
+    <div class="fg"><label>Email or staff name</label><input type="text" id="inviteEmail" placeholder="e.g. jane.doe@school.edu"></div>
+    <div class="fg"><label>Permission</label><select id="invitePerm"><option value="view">View only</option><option value="admin">Full administration</option></select></div>
+    <button class="btn blue" onclick="addInvite()"><i class="ti ti-mail"></i> Invite staff</button>
+    <div style="margin-top:18px;">
+      ${invitedUsers.length?`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><strong>Invited users</strong><span style="color:var(--text3);font-size:13px">${invitedUsers.length} total</span></div>`:'<div style="color:var(--text3);font-size:13px">No team members invited yet.</div>'}
+      ${invitedUsers.map(u=>`<div class="invite-row" style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-top:1px solid var(--surface2);"><div><strong>${esc(u.name)}</strong><div style="font-size:12px;color:var(--text3);margin-top:4px">${u.permission==='admin'?'Full administration access':'View only access'}</div></div><button class="btn sm ghost" onclick="removeInvite(${u.id})">Remove</button></div>`).join('')}
+    </div>
+  </div>
+`;
   document.getElementById('content').innerHTML=h;
 }
 
@@ -705,34 +719,7 @@ function renderTerm(){
     </div>`;
   });
   if(!any) h+='<div class="empty"><i class="ti ti-clipboard-x"></i>No tasks found</div>';
-  h += renderTermTemplate();
   document.getElementById('content').innerHTML=h;
-}
-
-function renderTermTemplate(){
-  const sample=`[
-  {
-    "title":"Draft NAPLAN timeline",
-    "category":"nesa",
-    "term":"T2",
-    "week":"W3",
-    "date":"2026-05-10",
-    "notes":"Review draft with HODs"
-  },
-  {
-    "title":"Staff PD agenda",
-    "category":"meeting",
-    "term":"T3",
-    "week":"W2",
-    "date":"2026-08-01",
-    "notes":"Include compliance updates"
-  }
-]`;
-  return `<div class="modern-card" style="margin-top:18px;">
-    <h3 style="margin-bottom:10px;">Term Planner Import Template</h3>
-    <p style="margin-bottom:12px;color:var(--text3);font-size:13px;line-height:1.6">Copy this JSON sample and adjust it to add events, deadlines, or any term planner entries. Use term codes <strong>T1</strong>–<strong>T4</strong> and week IDs <strong>W1</strong>–<strong>W10</strong>.</p>
-    <pre style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px;overflow:auto;max-height:260px;font-size:12px;line-height:1.5;">${esc(sample)}</pre>
-  </div>`;
 }
 
 function tcHtml(t,archived=false){
@@ -1077,6 +1064,21 @@ function importTermRows(rows){
     count++;
   });
   return count;
+}
+
+function addInvite(){
+  const name=document.getElementById('inviteEmail')?.value.trim();
+  const permission=document.getElementById('invitePerm')?.value||'view';
+  if(!name){alert('Enter an email or staff name to invite.');return;}
+  invitedUsers.push({id:uid++,name,permission});
+  document.getElementById('inviteEmail').value='';
+  document.getElementById('invitePerm').value='view';
+  render();
+}
+
+function removeInvite(id){
+  invitedUsers=invitedUsers.filter(u=>u.id!==id);
+  render();
 }
 
 // doc viewer
