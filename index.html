@@ -454,6 +454,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM San
 </div>
 
 <input type="file" id="file-input" style="display:none" accept="*/*" multiple>
+<input type="file" id="term-import-input" style="display:none" accept=".csv">
 
 <script>
 const TERMS={T1:{l:'Term 1',d:'28 Jan – 11 Apr',s:'2026-01-28',e:'2026-04-11'},T2:{l:'Term 2',d:'28 Apr – 4 Jul',s:'2026-04-28',e:'2026-07-04'},T3:{l:'Term 3',d:'21 Jul – 26 Sep',s:'2026-07-21',e:'2026-09-26'},T4:{l:'Term 4',d:'13 Oct – 19 Dec',s:'2026-10-13',e:'2026-12-19'}};
@@ -545,9 +546,12 @@ function renderDash(){
   const cterm=active.filter(t=>t.term===term).length,done=tasks.filter(t=>t.done).length;
   let h=`<div class="dashboard-hero">
     <div class="hero-copy">
-      <span class="hero-label">Term planner dashboard</span>
-      <h2>Keep every deadline, event and task in one calm, blue dashboard.</h2>
-      <p>Use the term planner to connect events, milestones and deadlines across your academic year with a soft gradient interface, clear weekly sections and easy task entry.</p>
+      <span class="hero-label">Admin Engine</span>
+      <h2>Admin Engine</h2>
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+        <button class="btn primary" onclick="document.getElementById('term-import-input').click()"><i class="ti ti-upload"></i> Import spreadsheet</button>
+        <span style="font-size:13px;color:var(--text3)">Use CSV columns: title,category,term,week,date,notes</span>
+      </div>
       <div class="hero-stats">
         <div class="hero-metric"><strong>${total}</strong><span>Active tasks</span></div>
         <div class="hero-metric"><strong>${cterm}</strong><span>Term ${term.slice(1)} tasks</span></div>
@@ -1023,6 +1027,12 @@ document.getElementById('file-input').addEventListener('change',e=>{
     handleFiles(files,docFolder);
   }
 });
+document.getElementById('term-import-input').addEventListener('change',e=>{
+  const files=Array.from(e.target.files);
+  e.target.value='';
+  if(!files.length) return;
+  handleTermImport(files[0]);
+});
 
 function handleFiles(files,targetFolder){
   const fld=targetFolder||docFolder;
@@ -1032,6 +1042,44 @@ function handleFiles(files,targetFolder){
     docs.push({id:uid++,name:f.name,type:f.type||'',sizeLabel:sl,dateAdded:new Date().toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'}),folder:fld,processed:false,processing:false,eventsFound:0,file:f,blobUrl,calEvents:[]});
   });
   if(view==='docs') render();
+}
+
+function handleTermImport(file){
+  if(!file.name.toLowerCase().endsWith('.csv')){alert('Please import a CSV file.');return;}
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{const rows=parseCSV(e.target.result);const imported=importTermRows(rows);alert(`${imported} rows imported to Term Planner.`);render();}
+    catch(err){console.error(err);alert('Unable to import the spreadsheet. Please check the CSV format.');}
+  };
+  reader.readAsText(file);
+}
+
+function parseCSV(text){
+  const lines=text.trim().split(/\r?\n/).filter(l=>l.trim());
+  if(!lines.length) return [];
+  const headings=lines.shift().split(',').map(h=>h.trim().toLowerCase());
+  return lines.map(line=>{
+    const values=line.split(',').map(v=>v.trim());
+    const row={};
+    headings.forEach((h,i)=>row[h]=values[i]||'');
+    return row;
+  });
+}
+
+function importTermRows(rows){
+  let count=0;
+  rows.forEach(row=>{
+    const title=row.title||row.name||'';
+    const category=row.category||row.cat||'admin';
+    const term=row.term||'';
+    const week=row.week||'';
+    const date=row.date||'';
+    const notes=row.notes||'';
+    if(!title||!term) return;
+    tasks.push({id:uid++,title,cat:category,term,week,date,notes,done:false,subtasks:[]});
+    count++;
+  });
+  return count;
 }
 
 // doc viewer
