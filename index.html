@@ -75,22 +75,26 @@ html,body{height:100%;background:linear-gradient(90deg,var(--navy) 0%,#0f2b57 12
 /* ── STAT CARDS ── */
 .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:26px}
 .stats-grid.c3{grid-template-columns:repeat(3,1fr)}
-.sc{background:linear-gradient(180deg,var(--blue2),var(--blue));border:1px solid rgba(255,255,255,0.12);border-radius:14px;padding:20px;position:relative;overflow:hidden;transition:all .24s ease;box-shadow:0 14px 32px rgba(2,6,23,0.12),0 2px 6px rgba(255,255,255,0.03);color:#fff}
+.sc{background:linear-gradient(180deg,#2f4d7b,#1f355e);border:1px solid rgba(255,255,255,0.12);border-radius:14px;padding:20px;position:relative;overflow:hidden;transition:all .24s ease;box-shadow:0 14px 32px rgba(2,6,23,0.12),0 2px 6px rgba(255,255,255,0.03);color:#fff}
+.stats-grid .sc:nth-child(1){background:linear-gradient(180deg,#3f5b8f,#2d4670)}
+.stats-grid .sc:nth-child(2){background:linear-gradient(180deg,#365380,#253f63)}
+.stats-grid .sc:nth-child(3){background:linear-gradient(180deg,#2b4772,#1f3459)}
+.stats-grid .sc:nth-child(4){background:linear-gradient(180deg,#243f68,#172a48)}
 .sc:hover{transform:translateY(-6px);box-shadow:0 28px 60px rgba(2,6,23,0.16),0 2px 8px rgba(255,255,255,0.04);border-color:rgba(255,255,255,0.18)}
 
 /* Directional adaptive glow */
-.glow-left{box-shadow: -18px 28px 56px rgba(59,130,246,0.12),0 18px 40px rgba(15,23,42,0.06),0 1px 0 rgba(255,255,255,0.6) !important}
-.glow-right{box-shadow: 18px 28px 56px rgba(96,165,250,0.12),0 18px 40px rgba(15,23,42,0.06),0 1px 0 rgba(255,255,255,0.6) !important}
+.glow-left{box-shadow: -18px 28px 56px rgba(33,66,118,0.18),0 18px 40px rgba(15,23,42,0.06),0 1px 0 rgba(255,255,255,0.6) !important}
+.glow-right{box-shadow: 18px 28px 56px rgba(16,35,78,0.18),0 18px 40px rgba(15,23,42,0.06),0 1px 0 rgba(255,255,255,0.6) !important}
 
 @keyframes glowPulseLeft{
-  0%{box-shadow: -12px 20px 40px rgba(59,130,246,0.08),0 14px 34px rgba(15,23,42,0.06),0 1px 0 rgba(255,255,255,0.6)}
-  50%{box-shadow: -30px 44px 86px rgba(59,130,246,0.22),0 22px 48px rgba(15,23,42,0.08),0 1px 0 rgba(255,255,255,0.7)}
-  100%{box-shadow: -12px 20px 40px rgba(59,130,246,0.08),0 14px 34px rgba(15,23,42,0.06),0 1px 0 rgba(255,255,255,0.6)}
+  0%{box-shadow: -12px 20px 40px rgba(33,66,118,0.08),0 14px 34px rgba(15,23,42,0.06),0 1px 0 rgba(255,255,255,0.6)}
+  50%{box-shadow: -30px 44px 86px rgba(33,66,118,0.22),0 22px 48px rgba(15,23,42,0.08),0 1px 0 rgba(255,255,255,0.7)}
+  100%{box-shadow: -12px 20px 40px rgba(33,66,118,0.08),0 14px 34px rgba(15,23,42,0.06),0 1px 0 rgba(255,255,255,0.6)}
 }
 @keyframes glowPulseRight{
-  0%{box-shadow: 12px 20px 40px rgba(96,165,250,0.08),0 14px 34px rgba(15,23,42,0.06),0 1px 0 rgba(255,255,255,0.6)}
-  50%{box-shadow: 30px 44px 86px rgba(96,165,250,0.22),0 22px 48px rgba(15,23,42,0.08),0 1px 0 rgba(255,255,255,0.7)}
-  100%{box-shadow: 12px 20px 40px rgba(96,165,250,0.08),0 14px 34px rgba(15,23,42,0.06),0 1px 0 rgba(255,255,255,0.6)}
+  0%{box-shadow: 12px 20px 40px rgba(16,35,78,0.08),0 14px 34px rgba(15,23,42,0.06),0 1px 0 rgba(255,255,255,0.6)}
+  50%{box-shadow: 30px 44px 86px rgba(16,35,78,0.22),0 22px 48px rgba(15,23,42,0.08),0 1px 0 rgba(255,255,255,0.7)}
+  100%{box-shadow: 12px 20px 40px rgba(16,35,78,0.08),0 14px 34px rgba(15,23,42,0.06),0 1px 0 rgba(255,255,255,0.6)}
 }
 
 .glow-left.glow-animate, .glow-left:hover{animation:glowPulseLeft 900ms ease-out}
