@@ -53,6 +53,7 @@ html,body{height:100%;background:linear-gradient(90deg,var(--navy) 0%,#0f2b57 12
 .nbadge{margin-left:auto;font-size:10px;font-weight:700;background:rgba(37,99,235,0.35);color:#93C5FD;border-radius:20px;padding:1px 8px}
 .sidebar-footer{padding:14px 18px;border-top:1px solid rgba(255,255,255,0.07)}
 .sidebar-footer p{font-size:10px;color:rgba(255,255,255,0.25);line-height:1.8}
+.sidebar-footer .build-credit{margin-top:8px;font-size:11px;color:rgba(255,255,255,0.7);font-weight:600;letter-spacing:0.02em;text-transform:uppercase}
 
 /* ── MAIN ── */
 .main{margin-left:var(--sidebar);min-height:100vh;display:flex;flex-direction:column}
@@ -453,7 +454,7 @@ html,body{height:100%;background:linear-gradient(90deg,var(--navy) 0%,#0f2b57 12
     <div class="ni" id="ni-archive" onclick="go('archive')"><i class="ti ti-archive"></i>Done / Archive</div>
     <div class="ni" id="ni-settings" onclick="go('settings')"><i class="ti ti-settings"></i>Settings</div>
   </nav>
-  <div class="sidebar-footer"><p>NSW School Year 2026<br>Terms 1 – 4</p></div>
+  <div class="sidebar-footer"><p>NSW School Year 2026<br>Terms 1 – 4</p><p class="build-credit">Built by Victoria Fordham</p></div>
 </aside>
 
 <div class="main">
@@ -506,7 +507,7 @@ const TERM_WEEKS={
   T4:WEEK_IDS.map((id,i)=>({id,name:`Week ${i+1}`,dates:''}))
 };
 
-let view='dashboard',tf='all',termf='all',expT={},expP={},expTerm={},expTermWeek={};
+let view='dashboard',tf='all',termf='all',expT={},expP={},expTerm={T1:false,T2:false,T3:false,T4:false},expTermWeek={};
 let mmode=null,margs=[];
 let uid=500,calview='month',caldate=new Date();
 let viewingDocId=null,docFolder='root';
@@ -532,6 +533,7 @@ let calManual=[];
 let invitedUsers=[];
 let profileImageUrl='';
 let profileInitials='VF';
+let builtByName='Victoria Fordham';
 
 // helpers
 function ct(){const m=new Date().getMonth()+1;if(m<=4)return'T1';if(m<=7)return'T2';if(m<=9)return'T3';return'T4';}
