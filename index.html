@@ -559,7 +559,7 @@ function renderTopbar(){
   const csv=`<button class="btn" onclick="exportCSV()"><i class="ti ti-download"></i> Export CSV</button>`;
   const imp=`<button class="btn" onclick="document.getElementById('term-import-input').click()"><i class="ti ti-upload"></i> Import CSV</button>`;
   const add=`<button class="btn primary" onclick="openModal('addTask')"><i class="ti ti-plus"></i> Add task</button>`;
-  if(view==='dashboard') el.innerHTML=add;
+  if(view==='dashboard') el.innerHTML='';
   else if(view==='tasks') el.innerHTML=csv+pr+add;
   else if(view==='term') el.innerHTML=csv+imp+pr+add;
   else if(view==='projects') el.innerHTML=pr+`<button class="btn primary" onclick="openModal('addProject')"><i class="ti ti-plus"></i> Add project</button>`;
