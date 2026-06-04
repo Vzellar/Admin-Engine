@@ -353,6 +353,19 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM San
   border-radius: 8px;
   margin-bottom: 6px;
 }
+.term-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);margin-bottom:18px;box-shadow:0 1px 6px rgba(11,25,41,0.05)}
+.term-header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 18px;cursor:pointer;user-select:none}
+.term-title{font-family:'DM Serif Display',serif;font-size:16px;color:var(--navy)}
+.term-summary{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--text3);flex-wrap:wrap}
+.week-card{border-top:1px solid var(--bg2)}
+.week-header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 18px;cursor:pointer;background:var(--surface2)}
+.week-title{font-size:13px;font-weight:700;color:var(--navy)}
+.week-count{font-size:12px;color:var(--text4)}
+.week-body{padding:0 18px 16px 18px}
+.week-body .tc{margin-bottom:10px}
+.week-header .btn{font-size:11px;padding:5px 9px}
+.week-toggle .xbtn{transform:rotate(0);transition:transform .2s}
+.week-toggle.open .xbtn{transform:rotate(180deg)}
 
 /* ── PRINT ── */
 @media print{
@@ -427,22 +440,23 @@ const TERMS={T1:{l:'Term 1',d:'28 Jan – 11 Apr',s:'2026-01-28',e:'2026-04-11'}
 const CATS={admin:'Admin',nesa:'NESA',staff:'Staff',reporting:'Reporting',event:'Event',meeting:'Meeting / PD'};
 const CAT_COLORS={admin:'#2563EB',nesa:'#DC2626',staff:'#059669',reporting:'#7C3AED',event:'#D97706',meeting:'#EA580C',manual:'#5A7490',doc:'#059669'};
 const ICONS=['ti-folder','ti-heart','ti-device-laptop','ti-book','ti-users','ti-chart-bar','ti-building','ti-calendar','ti-star','ti-clipboard','ti-school','ti-report'];
+const WEEKS=Array.from({length:10},(_,i)=>`Week ${i+1}`);
 
-let view='dashboard',tf='all',termf='all',expT={},expP={};
+let view='dashboard',tf='all',termf='all',expT={},expP={},expTerm={},expTermWeek={};
 let mmode=null,margs=[];
 let uid=500,calview='month',caldate=new Date();
 let viewingDocId=null,docFolder='root';
 let dragDocId=null;
 
 let tasks=[
-  {id:1,title:'Upload semester reports to CANVAS',cat:'admin',term:'T1',date:'2026-04-05',notes:'',done:false,subtasks:[{id:101,title:'Collect all class reports',done:true},{id:102,title:'Format and upload',done:false}]},
-  {id:2,title:'WHS annual review & staff sign-off',cat:'nesa',term:'T1',date:'2026-03-14',notes:'Whole staff sign-off required',done:false,subtasks:[]},
-  {id:3,title:'Staff appraisals — mid-year',cat:'staff',term:'T2',date:'2026-06-20',notes:'',done:false,subtasks:[{id:103,title:'Schedule meetings',done:false},{id:104,title:'Distribute forms',done:false}]},
-  {id:4,title:'NAPLAN registration window',cat:'nesa',term:'T2',date:'2026-05-10',notes:'',done:false,subtasks:[]},
-  {id:5,title:'Budget acquittal submission',cat:'reporting',term:'T2',date:'2026-06-30',notes:'',done:false,subtasks:[]},
-  {id:6,title:'Year 12 retreat booking',cat:'event',term:'T3',date:'2026-08-08',notes:'Confirm with venue',done:false,subtasks:[{id:105,title:'Get quote',done:true},{id:106,title:'Send permission notes',done:false}]},
-  {id:7,title:'Staff PD day planning',cat:'meeting',term:'T3',date:'2026-09-05',notes:'',done:false,subtasks:[]},
-  {id:8,title:'End of year compliance audit',cat:'nesa',term:'T4',date:'2026-11-28',notes:'',done:false,subtasks:[]},
+  {id:1,title:'Upload semester reports to CANVAS',cat:'admin',term:'T1',week:'Week 10',date:'2026-04-05',notes:'',done:false,subtasks:[{id:101,title:'Collect all class reports',done:true},{id:102,title:'Format and upload',done:false}]},
+  {id:2,title:'WHS annual review & staff sign-off',cat:'nesa',term:'T1',week:'Week 4',date:'2026-03-14',notes:'Whole staff sign-off required',done:false,subtasks:[]},
+  {id:3,title:'Staff appraisals — mid-year',cat:'staff',term:'T2',week:'Week 5',date:'2026-06-20',notes:'',done:false,subtasks:[{id:103,title:'Schedule meetings',done:false},{id:104,title:'Distribute forms',done:false}]},
+  {id:4,title:'NAPLAN registration window',cat:'nesa',term:'T2',week:'Week 3',date:'2026-05-10',notes:'',done:false,subtasks:[]},
+  {id:5,title:'Budget acquittal submission',cat:'reporting',term:'T2',week:'Week 7',date:'2026-06-30',notes:'',done:false,subtasks:[]},
+  {id:6,title:'Year 12 retreat booking',cat:'event',term:'T3',week:'Week 4',date:'2026-08-08',notes:'Confirm with venue',done:false,subtasks:[{id:105,title:'Get quote',done:true},{id:106,title:'Send permission notes',done:false}]},
+  {id:7,title:'Staff PD day planning',cat:'meeting',term:'T3',week:'Week 6',date:'2026-09-05',notes:'',done:false,subtasks:[]},
+  {id:8,title:'End of year compliance audit',cat:'nesa',term:'T4',week:'Week 10',date:'2026-11-28',notes:'',done:false,subtasks:[]},
 ];
 let projects=[
   {id:1,name:'Student Wellbeing Framework',icon:'ti-heart',steps:[{id:1,title:'Review policy documents',note:'',done:true},{id:2,title:'Consult counselling staff',note:'',done:true},{id:3,title:'Draft updated framework',note:'Share with principal',done:false},{id:4,title:'Present at PD day',note:'',done:false},{id:5,title:'Publish to intranet',note:'',done:false}]},
@@ -591,13 +605,52 @@ function renderTerm(){
   let vis=atv();
   if(tf!=='all') vis=vis.filter(t=>t.cat===tf);
   if(termf!=='all') vis=vis.filter(t=>t.term===termf);
-  const byT={};vis.forEach(t=>{if(!byT[t.term])byT[t.term]=[];byT[t.term].push(t);});
+  const weeks=WEEKS;
   let any=false;
   ['T1','T2','T3','T4'].forEach(tk=>{
-    if(!byT[tk]?.length) return; any=true;
-    h+=`<div style="margin-bottom:22px"><div class="shdr"><span class="shdr-title">${TERMS[tk].l}</span><span class="spill">${TERMS[tk].d}</span><span class="spill">${byT[tk].length} task${byT[tk].length!==1?'s':''}</span><div class="sline"></div></div>`;
-    byT[tk].forEach(t=>{h+=tcHtml(t);});
-    h+='</div>';
+    if(termf!=='all' && termf!==tk) return;
+    const termTasks=vis.filter(t=>t.term===tk);
+    if(termTasks.length || termf==='all') any=true;
+    const termOpen=expTerm[tk]!==false;
+    h+=`<div class="term-card">
+      <div class="term-header" onclick="toggleTerm('${tk}')">
+        <div>
+          <div class="term-title">${TERMS[tk].l}</div>
+          <div class="term-summary"><span>${TERMS[tk].d}</span><span>${termTasks.length} task${termTasks.length!==1?'s':''}</span></div>
+        </div>
+        <div class="week-count">${termOpen?'<i class="ti ti-chevron-down"></i>':'<i class="ti ti-chevron-right"></i>'}</div>
+      </div>
+      ${termOpen?`<div class="term-weeks">${weeks.map(week=>{
+        const key=`${tk}-${week}`;
+        const weekTasks=termTasks.filter(t=>t.week===week);
+        const weekOpen=expTermWeek[key]!==false;
+        return `<div class="week-card">
+          <div class="week-header week-toggle${weekOpen?' open':''}" onclick="toggleWeek('${tk}','${week}')">
+            <div><span class="week-title">${week}</span><span class="week-count">${weekTasks.length} task${weekTasks.length!==1?'s':''}</span></div>
+            <div style="display:flex;gap:8px;align-items:center">
+              <button class="btn sm blue" onclick="openModal('addTask','${tk}','${week}');event.stopPropagation()">+ Add</button>
+              <button class="xbtn${weekOpen?' open':''}" onclick="toggleWeek('${tk}','${week}');event.stopPropagation()"><i class="ti ti-chevron-down"></i></button>
+            </div>
+          </div>
+          <div class="week-body" style="display:${weekOpen?'block':'none'}">
+            ${weekTasks.length?weekTasks.map(t=>tcHtml(t)).join(''):'<div class="empty" style="padding:14px 0"><i class="ti ti-circle-plus"></i>No tasks for this week</div>'}
+          </div>
+        </div>`;
+      }).join('')}
+      <div class="week-card">
+        <div class="week-header week-toggle${expTermWeek[`${tk}-Unassigned`]!==false?' open':''}" onclick="toggleWeek('${tk}','Unassigned')">
+          <div><span class="week-title">Unassigned</span><span class="week-count">${termTasks.filter(t=>!t.week).length} task${termTasks.filter(t=>!t.week).length!==1?'s':''}</span></div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="btn sm blue" onclick="openModal('addTask','${tk}','');event.stopPropagation()">+ Add</button>
+            <button class="xbtn${expTermWeek[`${tk}-Unassigned`]!==false?' open':''}" onclick="toggleWeek('${tk}','Unassigned');event.stopPropagation()"><i class="ti ti-chevron-down"></i></button>
+          </div>
+        </div>
+        <div class="week-body" style="display:${expTermWeek[`${tk}-Unassigned`]!==false?'block':'none'}">
+          ${termTasks.filter(t=>!t.week).length?termTasks.filter(t=>!t.week).map(t=>tcHtml(t)).join(''):'<div class="empty" style="padding:14px 0"><i class="ti ti-circle-plus"></i>No unassigned tasks</div>'}
+        </div>
+      </div>
+      </div>`:''}
+    </div>`;
   });
   if(!any) h+='<div class="empty"><i class="ti ti-clipboard-x"></i>No tasks found</div>';
   document.getElementById('content').innerHTML=h;
@@ -616,6 +669,7 @@ function tcHtml(t,archived=false){
           <span class="tag tag-${t.cat}">${CATS[t.cat]||t.cat}</span>
           <span class="tag tag-neutral">${TERMS[t.term]?.l||t.term}</span>
           ${t.date?`<span class="dlabel${od?' od':''}"><i class="ti ti-${od?'alert-circle':'calendar-event'}" style="font-size:11px"></i>${fmtD(t.date)}</span>`:''}
+          ${t.week?`<span class="dlabel"><i class="ti ti-list-check" style="font-size:11px"></i>${esc(t.week)}</span>`:''}
           ${t.subtasks?.length?`<span class="dlabel"><i class="ti ti-subtask" style="font-size:11px"></i>${sd}/${t.subtasks.length}</span>`:''}
           ${t.notes?`<span class="dlabel" title="${esc(t.notes)}"><i class="ti ti-note" style="font-size:11px"></i></span>`:''}
         </div>
@@ -861,6 +915,8 @@ function setTF(f){tf=f;render();}
 function setTermF(f){termf=f;render();}
 function toggleT(id){expT[id]=!expT[id];render();}
 function toggleP(id){expP[id]=!expP[id];render();}
+function toggleTerm(term){expTerm[term]=!expTerm[term];render();}
+function toggleWeek(term,week){const key=`${term}-${week}`;expTermWeek[key]=!expTermWeek[key];render();}
 function checkTask(id){const t=tasks.find(t=>t.id===id);if(t){t.done=!t.done;if(t.done)delete expT[id];}render();}
 function checkSub(tid,sid){const t=tasks.find(t=>t.id===tid);const s=t?.subtasks.find(s=>s.id===sid);if(s)s.done=!s.done;render();}
 function checkStep(pid,sid){const p=projects.find(p=>p.id===pid);const s=p?.steps.find(s=>s.id===sid);if(s)s.done=!s.done;render();}
@@ -944,7 +1000,7 @@ function openModal(mode,...args){
   const title=document.getElementById('mtitle'),body=document.getElementById('mbody');
   
   if(mode==='addTask'||mode==='editTask'){
-    const t=mode==='editTask'?tasks.find(t=>t.id===args[0]):{};
+    const t=mode==='editTask'?tasks.find(t=>t.id===args[0]):{term:args[0]||'T1',week:args[1]||''};
     title.textContent=mode==='addTask'?'Add task':'Edit task';
     body.innerHTML=taskForm(t||{});
   } else if(mode==='addProject'||mode==='editProject'){
@@ -981,7 +1037,7 @@ function closeModal(){document.getElementById('overlay').classList.remove('open'
 function saveModal(){
   if(mmode==='addTask'||mmode==='editTask'){
     const title=document.getElementById('f-title')?.value.trim();if(!title)return;
-    const d={title,cat:document.getElementById('f-cat').value,term:document.getElementById('f-term').value,date:document.getElementById('f-date').value,notes:document.getElementById('f-notes').value.trim()};
+    const d={title,cat:document.getElementById('f-cat').value,term:document.getElementById('f-term').value,week:document.getElementById('f-week').value,date:document.getElementById('f-date').value,notes:document.getElementById('f-notes').value.trim()};
     if(mmode==='addTask') tasks.push({id:uid++,done:false,subtasks:[],...d});
     else{const t=tasks.find(t=>t.id===margs[0]);if(t)Object.assign(t,d);}
   } else if(mmode==='addProject'||mmode==='editProject'){
@@ -1013,9 +1069,11 @@ function saveModal(){
 function taskForm(t){
   const co=Object.keys(CATS).map(c=>`<option value="${c}"${t.cat===c?' selected':''}>${CATS[c]}</option>`).join('');
   const to=Object.keys(TERMS).map(k=>`<option value="${k}"${t.term===k?' selected':''}>${TERMS[k].l}</option>`).join('');
+  const wo=`<option value="">Unassigned</option>${WEEKS.map(w=>`<option value="${w}"${t.week===w?' selected':''}>${w}</option>`).join('')}`;
   return `<div class="fg"><label>Task title</label><input type="text" id="f-title" value="${esc(t.title||'')}" placeholder="e.g. Submit SCOUT data"></div>
     <div class="fg"><label>Category</label><select id="f-cat">${co}</select></div>
     <div class="fg"><label>Term</label><select id="f-term">${to}</select></div>
+    <div class="fg"><label>Week</label><select id="f-week">${wo}</select></div>
     <div class="fg"><label>Due date</label><input type="date" id="f-date" value="${t.date||''}"></div>
     <div class="fg"><label>Notes (optional)</label><textarea id="f-notes">${t.notes||''}</textarea></div>`;
 }
@@ -1025,8 +1083,8 @@ function projForm(p){
     <div class="fg"><label>Icon</label><select id="f-picon">${io}</select></div>`;
 }
 function exportCSV(){
-  const rows=[['Title','Category','Term','Due Date','Status','Notes','Subtasks']];
-  tasks.forEach(t=>{const s=(t.subtasks||[]).map(s=>`${s.title}(${s.done?'done':'pending'})`).join(' | ');rows.push([`"${t.title}"`,CATS[t.cat]||t.cat,t.term,t.date,t.done?'Done':'Active',`"${t.notes}"`,`"${s}"`]);});
+  const rows=[['Title','Category','Term','Week','Due Date','Status','Notes','Subtasks']];
+  tasks.forEach(t=>{const s=(t.subtasks||[]).map(s=>`${s.title}(${s.done?'done':'pending'})`).join(' | ');rows.push([`"${t.title}"`,CATS[t.cat]||t.cat,t.term,t.week||'',t.date,t.done?'Done':'Active',`"${t.notes}"`,`"${s}"`]);});
   const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(rows.map(r=>r.join(',')).join('\n'));a.download=`admin-engine-${new Date().toISOString().slice(0,10)}.csv`;a.click();
 }
 
