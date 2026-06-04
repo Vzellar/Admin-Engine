@@ -517,10 +517,11 @@ function renderTopbar(){
   const el=document.getElementById('tbbtns');
   const pr=`<button class="btn" onclick="window.print()"><i class="ti ti-printer"></i> Print</button>`;
   const csv=`<button class="btn" onclick="exportCSV()"><i class="ti ti-download"></i> Export CSV</button>`;
+  const imp=`<button class="btn" onclick="document.getElementById('term-import-input').click()"><i class="ti ti-upload"></i> Import CSV</button>`;
   const add=`<button class="btn primary" onclick="openModal('addTask')"><i class="ti ti-plus"></i> Add task</button>`;
   if(view==='dashboard') el.innerHTML=add;
   else if(view==='tasks') el.innerHTML=csv+pr+add;
-  else if(view==='term') el.innerHTML=csv+pr+add;
+  else if(view==='term') el.innerHTML=csv+imp+pr+add;
   else if(view==='projects') el.innerHTML=pr+`<button class="btn primary" onclick="openModal('addProject')"><i class="ti ti-plus"></i> Add project</button>`;
   else if(view==='docs') el.innerHTML=`<button class="btn" onclick="openModal('addFolder')"><i class="ti ti-folder-plus"></i> New folder</button><button class="btn primary" onclick="document.getElementById('file-input').click()"><i class="ti ti-upload"></i> Upload file</button>`;
   else if(view==='cal') el.innerHTML=`<button class="btn" onclick="caldate=new Date();render()"><i class="ti ti-home"></i> Today</button><button class="btn primary" onclick="openModal('addCalEvent')"><i class="ti ti-plus"></i> Add event</button>`;
@@ -548,10 +549,6 @@ function renderDash(){
     <div class="hero-copy">
       <span class="hero-label">Admin Engine</span>
       <h2>Admin Engine</h2>
-      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-        <button class="btn primary" onclick="document.getElementById('term-import-input').click()"><i class="ti ti-upload"></i> Import spreadsheet</button>
-        <span style="font-size:13px;color:var(--text3)">Use CSV columns: title,category,term,week,date,notes</span>
-      </div>
       <div class="hero-stats">
         <div class="hero-metric"><strong>${total}</strong><span>Active tasks</span></div>
         <div class="hero-metric"><strong>${cterm}</strong><span>Term ${term.slice(1)} tasks</span></div>
