@@ -75,8 +75,8 @@ html,body{height:100%;background:linear-gradient(135deg,#f9fbff 0%,#dde8ff 45%,#
 /* ── STAT CARDS ── */
 .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:26px}
 .stats-grid.c3{grid-template-columns:repeat(3,1fr)}
-.sc{background:rgba(255,255,255,0.96);border:1px solid rgba(96,165,250,0.16);border-radius:var(--r);padding:20px;position:relative;overflow:hidden;transition:all .18s;box-shadow:0 6px 24px rgba(59,130,246,0.08)}
-.sc:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(59,130,246,0.12);border-color:rgba(96,165,250,0.24)}
+.sc{background:rgba(255,255,255,0.92);border:1px solid rgba(226,232,240,0.9);border-radius:var(--r);padding:20px;position:relative;overflow:hidden;transition:all .24s ease;box-shadow:0 20px 40px rgba(15,23,42,0.08),0 1px 0 rgba(255,255,255,0.5);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+.sc:hover{transform:translateY(-4px);box-shadow:0 28px 48px rgba(15,23,42,0.12),0 1px 0 rgba(255,255,255,0.6);border-color:rgba(203,213,225,0.95)}
 .sc-strip{position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--r) var(--r) 0 0}
 .sc-strip.blue{background:linear-gradient(90deg,var(--blue),var(--blue3))}
 .sc-strip.green{background:linear-gradient(90deg,var(--green),#34D399)}
@@ -107,11 +107,11 @@ html,body{height:100%;background:linear-gradient(135deg,#f9fbff 0%,#dde8ff 45%,#
 .dashboard-hero::after{width:140px;height:140px;bottom:-40px;left:-30px;background:radial-gradient(circle,rgba(96,165,250,0.18),transparent 55%)}
 .hero-copy{position:relative;z-index:2;display:flex;flex-direction:column;gap:16px}
 .hero-copy .hero-label{font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--blue);opacity:.9}
-.hero-copy h2{font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:600;color:var(--navy);letter-spacing:.03em;line-height:1.05;max-width:520px;font-style:italic}
+.hero-copy h2{font-family:'Cormorant Garamond',serif;font-size:48px;font-weight:700;color:var(--navy);letter-spacing:.03em;line-height:1.05;max-width:520px;font-style:italic}
 .hero-copy p{max-width:560px;color:var(--text2);font-size:15px;line-height:1.75}
 .hero-stats{display:flex;gap:12px;flex-wrap:wrap}
-.hero-metric{background:rgba(255,255,255,0.96);border:1px solid rgba(96,165,250,0.24);border-radius:18px;padding:18px 20px;min-width:150px;box-shadow:0 12px 30px rgba(37,99,235,0.08);cursor:pointer;transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease}
-.hero-metric:hover{transform:translateY(-3px);box-shadow:0 18px 35px rgba(37,99,235,0.14);border-color:rgba(59,130,246,0.36)}
+.hero-metric{background:rgba(255,255,255,0.92);border:1px solid rgba(226,232,240,0.95);border-radius:18px;padding:18px 20px;min-width:150px;box-shadow:0 18px 40px rgba(15,23,42,0.08),0 1px 0 rgba(255,255,255,0.65);cursor:pointer;transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+.hero-metric:hover{transform:translateY(-4px);box-shadow:0 24px 46px rgba(15,23,42,0.12),0 1px 0 rgba(255,255,255,0.75);border-color:rgba(203,213,225,0.95)}
 .hero-metric strong{display:block;font-size:26px;color:var(--navy);font-weight:700;margin-bottom:4px}
 .hero-metric span{font-size:12px;color:var(--text4);text-transform:uppercase;letter-spacing:.08em}
 .hero-image-panel{position:relative;z-index:2;display:flex;flex-direction:column;align-items:flex-end;justify-content:flex-start;gap:18px}
@@ -553,7 +553,6 @@ function renderDash(){
   const cterm=active.filter(t=>t.term===term).length,done=tasks.filter(t=>t.done).length;
   let h=`<div class="dashboard-hero">
     <div class="hero-copy">
-      <span class="hero-label">Admin Engine</span>
       <h2>Admin Engine</h2>
       <div class="hero-stats">
         <div class="hero-metric" onclick="go('tasks')"><strong>${total}</strong><span>Active tasks</span></div>
