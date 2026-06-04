@@ -72,6 +72,10 @@ html,body{height:100%;background:linear-gradient(90deg,var(--navy) 0%,#0f2b57 12
 .btn.blue{background:var(--blue);color:#fff;border-color:var(--blue)}
 .btn.blue:hover{background:var(--blue2)}
 
+.settings-grid{display:grid;grid-template-columns:repeat(3,minmax(260px,1fr));gap:18px;margin-bottom:24px}
+@media(max-width:1100px){.settings-grid{grid-template-columns:1fr}}
+.muted{color:var(--text3);font-size:13px;line-height:1.7}
+
 /* ── STAT CARDS ── */
 .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:26px}
 .stats-grid.c3{grid-template-columns:repeat(3,1fr)}
@@ -447,6 +451,7 @@ html,body{height:100%;background:linear-gradient(90deg,var(--navy) 0%,#0f2b57 12
     <div class="ni" id="ni-cal" onclick="go('cal')"><i class="ti ti-calendar"></i>Calendar</div>
     <div class="nav-sec">History</div>
     <div class="ni" id="ni-archive" onclick="go('archive')"><i class="ti ti-archive"></i>Done / Archive</div>
+    <div class="ni" id="ni-settings" onclick="go('settings')"><i class="ti ti-settings"></i>Settings</div>
   </nav>
   <div class="sidebar-footer"><p>NSW School Year 2026<br>Terms 1 – 4</p></div>
 </aside>
@@ -486,7 +491,8 @@ html,body{height:100%;background:linear-gradient(90deg,var(--navy) 0%,#0f2b57 12
 
 <input type="file" id="file-input" style="display:none" accept="*/*" multiple>
 <input type="file" id="term-import-input" style="display:none" accept=".csv">
-
+<input type="file" id="tasks-import-input" style="display:none" accept=".csv">
+<input type="file" id="profile-pic-input" style="display:none" accept="image/*">
 <script>
 const TERMS={T1:{l:'Term 1',d:'28 Jan – 11 Apr',s:'2026-01-28',e:'2026-04-11'},T2:{l:'Term 2',d:'28 Apr – 4 Jul',s:'2026-04-28',e:'2026-07-04'},T3:{l:'Term 3',d:'21 Jul – 26 Sep',s:'2026-07-21',e:'2026-09-26'},T4:{l:'Term 4',d:'13 Oct – 19 Dec',s:'2026-10-13',e:'2026-12-19'}};
 const CATS={admin:'Admin',nesa:'NESA',staff:'Staff',reporting:'Reporting',event:'Event',meeting:'Meeting / PD'};
@@ -543,7 +549,7 @@ function go(v){
   view=v;
   document.querySelectorAll('.ni').forEach(el=>el.classList.remove('active'));
   const el=document.getElementById('ni-'+v);if(el)el.classList.add('active');
-  const titles={dashboard:'Dashboard',tasks:'Tasks',term:'Term planner',projects:'Projects',docs:'Documents',cal:'Calendar',archive:'Done / Archive'};
+  const titles={dashboard:'Dashboard',tasks:'Tasks',term:'Term planner',projects:'Projects',docs:'Documents',cal:'Calendar',archive:'Done / Archive',settings:'Settings'};
   document.getElementById('ptitle').textContent=titles[v]||v;
   renderTopbar();render();
 }
@@ -560,6 +566,7 @@ function renderTopbar(){
   else if(view==='docs') el.innerHTML=`<button class="btn" onclick="openModal('addFolder')"><i class="ti ti-folder-plus"></i> New folder</button><button class="btn primary" onclick="document.getElementById('file-input').click()"><i class="ti ti-upload"></i> Upload file</button>`;
   else if(view==='cal') el.innerHTML=`<button class="btn" onclick="caldate=new Date();render()"><i class="ti ti-home"></i> Today</button><button class="btn primary" onclick="openModal('addCalEvent')"><i class="ti ti-plus"></i> Add event</button>`;
   else if(view==='archive') el.innerHTML=`<button class="btn" onclick="clearArchive()"><i class="ti ti-trash"></i> Clear all</button>${pr}`;
+  else if(view==='settings') el.innerHTML=pr;
 }
 
 function render(){
@@ -571,6 +578,7 @@ function render(){
   else if(view==='docs') renderDocs();
   else if(view==='cal') renderCal();
   else if(view==='archive') renderArchive();
+  else if(view==='settings') renderSettings();
   try{applyAdaptiveGlow();}catch(e){}
 }
 
@@ -661,20 +669,7 @@ h += `
 `;
 ``
 
-  h += `
-  <div class="modern-card" style="margin-top:18px;">
-    <h3 style="margin-bottom:10px;">Invite admin staff</h3>
-    <p style="margin-bottom:12px;color:var(--text3);font-size:13px;line-height:1.6">Add your team members and choose whether they can view the planner or have full administration access.</p>
-    <div class="fg"><label>Email or staff name</label><input type="text" id="inviteEmail" placeholder="e.g. jane.doe@school.edu"></div>
-    <div class="fg"><label>Permission</label><select id="invitePerm"><option value="view">View only</option><option value="admin">Full administration</option></select></div>
-    <button class="btn blue" onclick="addInvite()"><i class="ti ti-mail"></i> Invite staff</button>
-    <div style="margin-top:18px;">
-      ${invitedUsers.length?`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><strong>Invited users</strong><span style="color:var(--text3);font-size:13px">${invitedUsers.length} total</span></div>`:'<div style="color:var(--text3);font-size:13px">No team members invited yet.</div>'}
-      ${invitedUsers.map(u=>`<div class="invite-row" style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-top:1px solid var(--surface2);"><div><strong>${esc(u.name)}</strong><div style="font-size:12px;color:var(--text3);margin-top:4px">${u.permission==='admin'?'Full administration access':'View only access'}</div></div><button class="btn sm ghost" onclick="removeInvite(${u.id})">Remove</button></div>`).join('')}
-    </div>
-  </div>
-`;
-  document.getElementById('content').innerHTML=h;
+    document.getElementById('content').innerHTML=h;
 }
 
 // TASKS
@@ -752,6 +747,41 @@ function renderTerm(){
     </div>`;
   });
   if(!any) h+='<div class="empty"><i class="ti ti-clipboard-x"></i>No tasks found</div>';
+  document.getElementById('content').innerHTML=h;
+}
+
+function renderSettings(){
+  let h=`<div class="settings-grid">
+    <div class="modern-card">
+      <h3>Profile & Branding</h3>
+      <p class="muted">Upload a profile image or school logo for the dashboard avatar.</p>
+      <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap">
+        <div class="hero-avatar" style="width:96px;height:96px;min-width:96px;min-height:96px;">
+          ${profileImageUrl?`<img src="${esc(profileImageUrl)}" alt="Profile image">`:`<span>${esc(profileInitials)}</span>`}
+        </div>
+        <div style="flex:1;min-width:220px">
+          <button class="btn" onclick="document.getElementById('profile-pic-input').click()"><i class="ti ti-upload"></i> Upload profile / logo</button>
+          ${profileImageUrl?`<button class="btn ghost" style="margin-left:12px" onclick="clearProfileImage()">Remove image</button>`:''}
+        </div>
+      </div>
+    </div>
+    <div class="modern-card">
+      <h3>Team access</h3>
+      <p class="muted">Invite staff members as view-only or full administrators.</p>
+      <div class="fg"><label>Email or staff name</label><input type="text" id="inviteEmail" placeholder="e.g. jane.doe@school.edu"></div>
+      <div class="fg"><label>Permission</label><select id="invitePerm"><option value="view">View only</option><option value="admin">Full administration</option></select></div>
+      <button class="btn blue" onclick="addInvite()"><i class="ti ti-mail"></i> Invite staff</button>
+      <div style="margin-top:18px">
+        ${invitedUsers.length?`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><strong>Invited users</strong><span style="color:var(--text3);font-size:13px">${invitedUsers.length} total</span></div>`:'<div class="muted">No team members invited yet.</div>'}
+        ${invitedUsers.map(u=>`<div class="invite-row" style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-top:1px solid var(--surface2);"><div><strong>${esc(u.name)}</strong><div class="muted" style="margin-top:4px">${u.permission==='admin'?'Full administration access':'View only access'}</div></div><button class="btn sm ghost" onclick="removeInvite(${u.id})">Remove</button></div>`).join('')}
+      </div>
+    </div>
+    <div class="modern-card">
+      <h3>Import tasks</h3>
+      <p class="muted">Upload a CSV file to import tasks directly into the planner.</p>
+      <button class="btn primary" onclick="document.getElementById('tasks-import-input').click()"><i class="ti ti-upload"></i> Import CSV</button>
+    </div>
+  </div>`;
   document.getElementById('content').innerHTML=h;
 }
 
@@ -1050,6 +1080,18 @@ document.getElementById('term-import-input').addEventListener('change',e=>{
   if(!files.length) return;
   handleTermImport(files[0]);
 });
+document.getElementById('tasks-import-input').addEventListener('change',e=>{
+  const files=Array.from(e.target.files);
+  e.target.value='';
+  if(!files.length) return;
+  handleTaskImport(files[0]);
+});
+document.getElementById('profile-pic-input').addEventListener('change',e=>{
+  const files=Array.from(e.target.files);
+  e.target.value='';
+  if(!files.length) return;
+  handleProfileUpload(files[0]);
+});
 
 function handleFiles(files,targetFolder){
   const fld=targetFolder||docFolder;
@@ -1061,15 +1103,24 @@ function handleFiles(files,targetFolder){
   if(view==='docs') render();
 }
 
-function handleTermImport(file){
+function handleTermImport(file){handleCSVImport(file,'Term Planner');}
+function handleTaskImport(file){handleCSVImport(file,'Tasks');}
+function handleCSVImport(file,label){
   if(!file.name.toLowerCase().endsWith('.csv')){alert('Please import a CSV file.');return;}
   const reader=new FileReader();
   reader.onload=e=>{
-    try{const rows=parseCSV(e.target.result);const imported=importTermRows(rows);alert(`${imported} rows imported to Term Planner.`);render();}
+    try{const rows=parseCSV(e.target.result);const imported=importTermRows(rows);alert(`${imported} rows imported to ${label}.`);render();}
     catch(err){console.error(err);alert('Unable to import the spreadsheet. Please check the CSV format.');}
   };
   reader.readAsText(file);
 }
+function handleProfileUpload(file){
+  if(!file.type.startsWith('image/')){alert('Please choose an image file.');return;}
+  const reader=new FileReader();
+  reader.onload=e=>{profileImageUrl=e.target.result;render();};
+  reader.readAsDataURL(file);
+}
+function clearProfileImage(){profileImageUrl='';render();}
 
 function parseCSV(text){
   const lines=text.trim().split(/\r?\n/).filter(l=>l.trim());
