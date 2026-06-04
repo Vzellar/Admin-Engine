@@ -36,7 +36,7 @@
   --orange:#EA580C;--orangebg:#FFEDD5;
   --sidebar:240px;--r:12px;--rsm:8px;--rlg:16px;
 }
-html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.55;overflow-x:hidden}
+html,body{height:100%;background:linear-gradient(135deg,#f9fbff 0%,#dde8ff 45%,#ffffff 100%);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.55;overflow-x:hidden}
 
 /* ── SIDEBAR ── */
 .sidebar{width:var(--sidebar);background:var(--navy);border-right:none;position:fixed;left:0;top:0;height:100vh;display:flex;flex-direction:column;z-index:50;box-shadow:4px 0 20px rgba(11,25,41,0.15)}
@@ -57,7 +57,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM San
 /* ── MAIN ── */
 .main{margin-left:var(--sidebar);min-height:100vh;display:flex;flex-direction:column}
 .topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-shrink:0;box-shadow:0 1px 4px rgba(11,25,41,0.06)}
-.page-title{font-family:'DM Serif Display',serif;font-size:22px;color:var(--navy);letter-spacing:.01em}
+.page-title{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--navy);letter-spacing:.01em}
 .topbar-right{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .content{padding:28px;flex:1}
 
@@ -75,8 +75,8 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM San
 /* ── STAT CARDS ── */
 .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:26px}
 .stats-grid.c3{grid-template-columns:repeat(3,1fr)}
-.sc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:20px;position:relative;overflow:hidden;transition:all .18s;box-shadow:0 2px 8px rgba(11,25,41,0.06)}
-.sc:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(11,25,41,0.1);border-color:var(--border2)}
+.sc{background:rgba(255,255,255,0.96);border:1px solid rgba(96,165,250,0.16);border-radius:var(--r);padding:20px;position:relative;overflow:hidden;transition:all .18s;box-shadow:0 6px 24px rgba(59,130,246,0.08)}
+.sc:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(59,130,246,0.12);border-color:rgba(96,165,250,0.24)}
 .sc-strip{position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--r) var(--r) 0 0}
 .sc-strip.blue{background:linear-gradient(90deg,var(--blue),var(--blue3))}
 .sc-strip.green{background:linear-gradient(90deg,var(--green),#34D399)}
@@ -101,17 +101,18 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM San
 .tterm{font-size:11px;font-weight:600;padding:5px 12px;border-radius:20px;background:var(--bg2);color:var(--text3);border:1px solid var(--border)}
 .tterm.cur{background:var(--navy);color:#fff;border-color:var(--navy)}
 
-.dashboard-hero{position:relative;display:grid;grid-template-columns:1.7fr 1fr;gap:22px;background:linear-gradient(135deg,rgba(237,245,255,0.95),rgba(227,238,255,0.7));border:1px solid rgba(94,123,255,0.17);border-radius:22px;padding:28px;overflow:hidden;box-shadow:0 24px 60px rgba(37,99,235,0.08);margin-bottom:26px}
+.dashboard-hero{position:relative;display:grid;grid-template-columns:1.7fr 1fr;gap:22px;background:linear-gradient(135deg,rgba(235,244,255,0.98),rgba(219,232,255,0.95) 40%,rgba(255,255,255,0.95));border:1px solid rgba(96,165,250,0.22);border-radius:26px;padding:30px;overflow:hidden;box-shadow:0 30px 70px rgba(37,99,235,0.12);margin-bottom:30px}
 .dashboard-hero::before,.dashboard-hero::after{content:'';position:absolute;border-radius:50%;opacity:.45}
-.dashboard-hero::before{width:180px;height:180px;top:-40px;right:-30px;background:radial-gradient(circle,rgba(37,99,235,0.18),transparent 60%)}
-.dashboard-hero::after{width:120px;height:120px;bottom:-30px;left:-20px;background:radial-gradient(circle,rgba(96,165,250,0.16),transparent 60%)}
+.dashboard-hero::before{width:220px;height:220px;top:-50px;right:-50px;background:radial-gradient(circle,rgba(59,130,246,0.22),transparent 55%)}
+.dashboard-hero::after{width:140px;height:140px;bottom:-40px;left:-30px;background:radial-gradient(circle,rgba(96,165,250,0.18),transparent 55%)}
 .hero-copy{position:relative;z-index:2;display:flex;flex-direction:column;gap:16px}
 .hero-copy .hero-label{font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--blue);opacity:.9}
-.hero-copy h2{font-family:'DM Serif Display',serif;font-size:34px;color:var(--navy);line-height:1.05;max-width:520px}
+.hero-copy h2{font-family:'Cormorant Garamond',serif;font-size:36px;color:var(--navy);line-height:1.05;max-width:520px}
 .hero-copy p{max-width:560px;color:var(--text2);font-size:15px;line-height:1.75}
 .hero-stats{display:flex;gap:12px;flex-wrap:wrap}
-.hero-metric{background:rgba(255,255,255,0.9);border:1px solid rgba(255,255,255,0.8);border-radius:16px;padding:16px 18px;min-width:140px;box-shadow:0 10px 35px rgba(37,99,235,0.06)}
-.hero-metric strong{display:block;font-size:24px;color:var(--navy);font-weight:700;margin-bottom:4px}
+.hero-metric{background:rgba(255,255,255,0.96);border:1px solid rgba(96,165,250,0.24);border-radius:18px;padding:18px 20px;min-width:150px;box-shadow:0 12px 30px rgba(37,99,235,0.08);cursor:pointer;transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease}
+.hero-metric:hover{transform:translateY(-3px);box-shadow:0 18px 35px rgba(37,99,235,0.14);border-color:rgba(59,130,246,0.36)}
+.hero-metric strong{display:block;font-size:26px;color:var(--navy);font-weight:700;margin-bottom:4px}
 .hero-metric span{font-size:12px;color:var(--text4);text-transform:uppercase;letter-spacing:.08em}
 .hero-image-panel{position:relative;z-index:2;display:flex;flex-direction:column;align-items:flex-end;justify-content:flex-start;gap:18px}
 .hero-avatar{width:120px;height:120px;border-radius:30px;background:linear-gradient(145deg,rgba(59,130,246,0.95),rgba(59,130,246,0.75));display:flex;align-items:center;justify-content:center;box-shadow:0 24px 40px rgba(37,99,235,0.15);position:relative;overflow:hidden}
@@ -505,7 +506,7 @@ function fmtD(d){if(!d)return'';return new Date(d+'T00:00:00').toLocaleDateStrin
 function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function atv(){return tasks.filter(t=>!t.done);}
 function archv(){return tasks.filter(t=>t.done);}
-function scHTML(n,l,ic,icCls,strip){return`<div class="sc"><div class="sc-strip ${strip||icCls}"></div><div class="sc-icon ${icCls}"><i class="ti ti-${ic}"></i></div><div class="sc-n">${n}</div><div class="sc-l">${l}</div></div>`;}
+function scHTML(n,l,ic,icCls,strip,click){return`<div class="sc"${click?` onclick="${click}"`:''}><div class="sc-strip ${strip||icCls}"></div><div class="sc-icon ${icCls}"><i class="ti ti-${ic}"></i></div><div class="sc-n">${n}</div><div class="sc-l">${l}</div></div>`;}
 function updBadge(){const el=document.getElementById('tbadge');if(el)el.textContent=atv().length;}
 function ds(d){return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
 
@@ -555,9 +556,9 @@ function renderDash(){
       <span class="hero-label">Admin Engine</span>
       <h2>Admin Engine</h2>
       <div class="hero-stats">
-        <div class="hero-metric"><strong>${total}</strong><span>Active tasks</span></div>
-        <div class="hero-metric"><strong>${cterm}</strong><span>Term ${term.slice(1)} tasks</span></div>
-        <div class="hero-metric"><strong>${overdue}</strong><span>Overdue items</span></div>
+        <div class="hero-metric" onclick="go('tasks')"><strong>${total}</strong><span>Active tasks</span></div>
+        <div class="hero-metric" onclick="go('term')"><strong>${cterm}</strong><span>Term ${term.slice(1)} tasks</span></div>
+        <div class="hero-metric" onclick="go('tasks')"><strong>${overdue}</strong><span>Overdue items</span></div>
       </div>
     </div>
     <div class="hero-image-panel">
@@ -571,10 +572,10 @@ function renderDash(){
     </div>
   </div>
   <div class="stats-grid">
-    ${scHTML(total,'Active tasks','list-check','blue')}
-    ${scHTML(done,'Completed','circle-check','green')}
-    ${scHTML(overdue,'Overdue','alert-circle','red')}
-    ${scHTML(cterm,'This term','calendar','amber')}
+    ${scHTML(total,'Active tasks','list-check','blue',null,"go('tasks')")}
+    ${scHTML(done,'Completed','circle-check','green',null,"go('archive')")}
+    ${scHTML(overdue,'Overdue','alert-circle','red',null,"go('tasks')")}
+    ${scHTML(cterm,'This term','calendar','amber',null,"go('term')")}
   </div>
   <div class="tprog">
     <div class="tprog-body">
